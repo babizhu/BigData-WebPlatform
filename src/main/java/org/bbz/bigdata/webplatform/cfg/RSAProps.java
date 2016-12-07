@@ -14,7 +14,8 @@ public enum RSAProps{
     private final String publicKey;
 
     RSAProps(){
-        String filePath = this.getClass().getClassLoader().getResource( "key.properties" ).getPath();
+
+        String filePath = this.getClass().getClassLoader().getResource( "rsa_key.properties" ).getPath();
 
         Properties prop = new Properties();
         InputStream in = null;
