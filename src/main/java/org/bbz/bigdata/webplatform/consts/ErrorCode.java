@@ -10,10 +10,14 @@ import java.util.Map;
 public enum ErrorCode{
     SUCCESS( 0 ),
     ILLEGAL_ARGUMENT( 1 ),
+    UNKNOW_ERROR( 2 ),
     LOGIN_ERROR( 100 ), NOT_LOGIN( 101 ), USER_HAS_EXIST(102),
     USER_PASSWD_LEN_TOO_SHORT( 103 ),//密码长度不够
     PERMISSION_DENIED(104),
-    OPERATION_NOT_FOUND( 150 );
+    OPERATION_NOT_FOUND( 150 ),
+
+    HDFS_ACCESS_ERROR(601);//HDFS访问权限不足
+
     private final int number;
 
     private static final Map<Integer, ErrorCode> numToEnum = new HashMap<>();

@@ -11,6 +11,12 @@ import java.util.Properties;
  * 读取后缀名为Properties的配置文件
  */
 public class ReadProperties{
+    /**
+     * 初始化ｐｒｏｐｓ
+     * @param cfgPath   配置文件的路径
+     * @return
+     *          Properties
+     */
     public Properties init( String cfgPath ){
         Properties prop = null;
         try {
