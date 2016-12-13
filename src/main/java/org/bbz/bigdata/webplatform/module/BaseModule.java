@@ -30,4 +30,8 @@ public class BaseModule{
 //        return "{\"errId\":" + errId.toNum() + ",\"args\":\"" + args + "\"}";
         return re;
     }
+
+    protected NutMap buildSuccessResponse(){
+        return new NutMap().addv( "success","1" );
+    }
 }
