@@ -7,26 +7,26 @@ import java.util.Map;
  * Created by liulaoye on 16-12-14.
  * 常见的增删改操作枚举
  */
-public enum OperationType{
+public enum NormalOperationType {
     ADD_OR_UPDATE( 1 ),
 //    UPDATE( 1 ),
     DELETE( 2 ),;
 
     private final int number;
 
-    private static final Map<Integer, OperationType> numToEnum = new HashMap<Integer, OperationType>();
+    private static final Map<Integer, NormalOperationType> numToEnum = new HashMap<Integer, NormalOperationType>();
 
     static{
-        for( OperationType t : values() ) {
+        for( NormalOperationType t : values() ) {
 
-            OperationType s = numToEnum.put( t.number, t );
+            NormalOperationType s = numToEnum.put( t.number, t );
             if( s != null ) {
                 throw new RuntimeException( t.number + "重复了" );
             }
         }
     }
 
-    OperationType( int number ){
+    NormalOperationType(int number ){
         this.number = number;
     }
 
@@ -34,7 +34,7 @@ public enum OperationType{
         return number;
     }
 
-    public static OperationType fromNum( int n ){
+    public static NormalOperationType fromNum(int n ){
         return numToEnum.get( n );
     }
 }
