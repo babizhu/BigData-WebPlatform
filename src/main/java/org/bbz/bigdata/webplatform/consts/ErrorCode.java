@@ -16,7 +16,14 @@ public enum ErrorCode{
     PERMISSION_DENIED(104),
     OPERATION_NOT_FOUND( 150 ),
 
-    HDFS_ACCESS_ERROR(601);//HDFS访问权限不足
+    HDFS_ACCESS_ERROR(601),//HDFS访问权限不足
+
+    OOZIE_A(701),
+
+    ALL_ERROR(100000);
+
+
+
 
     private final int number;
 
