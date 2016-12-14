@@ -56,14 +56,14 @@ public class UserModule extends BaseModule{
 //        }
 
         if( Strings.isBlank( username ) || Strings.isBlank( password ) ) {
-            return buildErrorResponse( response, ErrorCode.LOGIN_ERROR );
+            return buildErrorResponse( response, ErrorCode.USER_LOGIN_ERROR );
         }
         String p = decodeRsaPassword( password );
 
         int userId = userService.fetch( username, p );
         if( userId < 0 ) {
 
-            return buildErrorResponse( response, ErrorCode.LOGIN_ERROR );
+            return buildErrorResponse( response, ErrorCode.USER_LOGIN_ERROR );
         } else {
             session.setAttribute( "me", userId );
             // 完成nutdao_realm后启用.

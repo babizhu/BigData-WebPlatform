@@ -6,19 +6,26 @@ import java.util.Map;
 /**
  * Created by liulaoye on 16-10-31.
  * 错误代码
+ *
+ * ０－５９９属于系统保留
  */
 public enum ErrorCode{
     SUCCESS( 0 ),
-    ILLEGAL_ARGUMENT( 1 ),
+    ILLEGAL_ARGUMENT( 1 ),//参数错误
     UNKNOW_ERROR( 2 ),
-    LOGIN_ERROR( 100 ), NOT_LOGIN( 101 ), USER_HAS_EXIST(102),
+    USER_LOGIN_ERROR( 100 ),
+    USER_NOT_LOGIN( 101 ),
+    USER_HAS_EXIST(102),
     USER_PASSWD_LEN_TOO_SHORT( 103 ),//密码长度不够
-    PERMISSION_DENIED(104),
+    USER_PERMISSION_DENIED(104),
     OPERATION_NOT_FOUND( 150 ),
 
     HDFS_ACCESS_ERROR(601),//HDFS访问权限不足
 
-    OOZIE_A(701),
+    OOZIE_COMPONENT_NOT_FOUND(701),//模块不存在
+
+
+
 
     ALL_ERROR(100000);
 

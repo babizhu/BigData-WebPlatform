@@ -20,7 +20,7 @@ public class CustomNutShiroProcessor extends NutShiroProcessor{
         if( NutShiro.isAjax( ac.getRequest() ) ) {
 //            ac.getResponse().addHeader( "loginStatus", "accessDenied" );
             ac.getResponse().setStatus( 500 );
-            NutShiro.rendAjaxResp( ac.getRequest(), ac.getResponse(), new NutMap().addv( "errId", ErrorCode.NOT_LOGIN.toNum() ) );
+            NutShiro.rendAjaxResp( ac.getRequest(), ac.getResponse(), new NutMap().addv( "errId", ErrorCode.USER_NOT_LOGIN.toNum() ) );
         } else {
             new ServerRedirectView( loginUri() ).render( ac.getRequest(), ac.getResponse(), null );
         }
@@ -29,7 +29,7 @@ public class CustomNutShiroProcessor extends NutShiroProcessor{
     protected void whenUnauthorized(ActionContext ac, UnauthorizedException e) throws Exception {
         if (NutShiro.isAjax(ac.getRequest())) {
             ac.getResponse().setStatus( 500 );
-            NutShiro.rendAjaxResp( ac.getRequest(), ac.getResponse(), new NutMap().addv( "errId", ErrorCode.PERMISSION_DENIED.toNum() ) );
+            NutShiro.rendAjaxResp( ac.getRequest(), ac.getResponse(), new NutMap().addv( "errId", ErrorCode.USER_PERMISSION_DENIED.toNum() ) );
         } else {
             new ServerRedirectView(noAuthUri()).render(ac.getRequest(), ac.getResponse(), null);
         }
