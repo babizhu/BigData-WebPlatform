@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by liulaoye on 16-10-31.
  * 错误代码
- *
+ * <p>
  * ０－５９９属于系统保留
  */
 public enum ErrorCode{
@@ -15,23 +15,19 @@ public enum ErrorCode{
     UNKNOW_ERROR( 2 ),
     USER_LOGIN_ERROR( 100 ),
     USER_NOT_LOGIN( 101 ),
-    USER_HAS_EXIST(102),
+    USER_HAS_EXIST( 102 ),
     USER_PASSWD_LEN_TOO_SHORT( 103 ),//密码长度不够
-    USER_PERMISSION_DENIED(104),
+    USER_PERMISSION_DENIED( 104 ),
     OPERATION_NOT_FOUND( 150 ),
 
-    HDFS_ACCESS_ERROR(601),//HDFS访问权限不足
+    HDFS_ACCESS_ERROR( 601 ),//HDFS访问权限不足
+    HDFS_DIR_HAS_EXIST( 602 ),//hdfs文件夹已经存在
 
-    OOZIE_COMPONENT_NOT_FOUND(701),//模块不存在
-
-
-
-
-    ALL_ERROR(100000);
+    HDFS_NOT_RECURSIVE( 603 ),//删除的是目录，但是并没有指定递归删除
+    OOZIE_COMPONENT_NOT_FOUND( 701 ),//模块不存在
 
 
-
-
+    ALL_ERROR( 100000 ),;
     private final int number;
 
     private static final Map<Integer, ErrorCode> numToEnum = new HashMap<>();

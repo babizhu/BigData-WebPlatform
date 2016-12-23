@@ -7,8 +7,8 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.bbz.bigdata.webplatform.bean.hdfs.HdfsDirInfo;
 import org.bbz.bigdata.webplatform.consts.ErrorCode;
-import org.bbz.bigdata.webplatform.service.hdfs.HdfsService;
 import org.bbz.bigdata.webplatform.service.hdfs.FileReadType;
+import org.bbz.bigdata.webplatform.service.hdfs.HdfsService;
 import org.bbz.bigdata.webplatform.service.hdfs.OperationType;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
@@ -17,7 +17,6 @@ import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.GET;
 import org.nutz.mvc.annotation.Param;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,46 +35,63 @@ public class HdfsModule extends BaseModule{
     private HdfsService hdfsService;
 
 
+    /**
+     * 文件操作
+     * @param path          当前路径
+     * @param op            操作ｉｄ
+     * @param args          相关参数
+     * @param response      response
+     * @return
+     *                      json
+     */
     @At
     public NutMap operation( @Param("path") String path,
                              @Param("op") int op,
                              @Param("args") String args,
-                             HttpServletRequest req,
                              HttpServletResponse response ){
 
         ErrorCode ret;
+
         final OperationType operationType = OperationType.fromNum( op );
-        switch( operationType ) {
-            case MKDIR:
+        try( FileSystem fs = FileSystem.get( new Configuration() ) ) {
+            switch( operationType ) {
+                case MKDIR:
 
-                ret = hdfsService.mkdir( args );
-                break;
-            default:
-                return this.buildErrorResponse( response, ErrorCode.OPERATION_NOT_FOUND, op + "" );
+                    String directory = this.getRealDirectory( fs, path );
+                    ret = hdfsService.mkdir( fs, directory + args );
+                    break;
+                case RENAME:
+                    ret = hdfsService.rename( fs, path, args );
+                    break;
+                case RM:
+                    boolean recursiveDelete = Boolean.parseBoolean( args );
+                    ret = hdfsService.rm( fs, path, recursiveDelete );
+                    break;
+                default:
+                    return this.buildErrorResponse( response, ErrorCode.OPERATION_NOT_FOUND, op + "" );
+            }
+        } catch( Exception e ) {
+            return buildErrorResponse( response, ErrorCode.UNKNOW_ERROR, e.getLocalizedMessage() );
         }
 
-        if( ret != ErrorCode.SUCCESS){
-            this.buildErrorResponse( response, ret );
-        }
-        return this.buildSuccessResponse();
+        return ret != ErrorCode.SUCCESS ? buildErrorResponse( response, ret ) : buildSuccessResponse();
+
     }
 
     /**
      * 获取指定路径下的文件信息，如果指定路径为文件夹，则返回文件夹的内容，如果指定路径为文件，则返回文件内容
      *
-     * @param   path     指定路径
-     * @param   response response
-     * @return
-     *          json
+     * @param path     指定路径
+     * @param response response
+     * @return json
      */
     @At
     @GET
     public Object getFilePathInfo( @Param("path") String path, @Param("readType") int readType,
                                    @Param("currentBlock") int readBlock,
                                    HttpServletResponse response ){
-        FileSystem fs = null;
-        try {
-            fs = FileSystem.get( new Configuration() );
+        try( FileSystem fs = FileSystem.get( new Configuration() ) ) {
+
             Boolean isFile = fs.isFile( new Path( path ) );
             if( isFile ) {
                 return this.getFileContent( path, fs, readType, readBlock );
@@ -88,14 +104,6 @@ public class HdfsModule extends BaseModule{
         } catch( Exception e ) {
             return buildErrorResponse( response, ErrorCode.UNKNOW_ERROR, e.getLocalizedMessage() );
 
-        } finally {
-            if( fs != null ) {
-                try {
-                    fs.close();
-                } catch( IOException e ) {
-                    return buildErrorResponse( response, ErrorCode.UNKNOW_ERROR, e.getLocalizedMessage() );
-                }
-            }
         }
     }
 
@@ -168,6 +176,23 @@ public class HdfsModule extends BaseModule{
         return list;
     }
 
+    /**
+     * 客户端上传的currentPath有可能是一个文件，此时如果是需要新增目录，这样就需要获取此文件所在的目录作为当前目录
+     * 目录名末尾自动加上"/"
+     *
+     * @param fs            fs
+     * @param currentPath   currentPath
+     * @return
+     *                      实际的目录名
+     */
+    private String getRealDirectory( FileSystem fs, String currentPath ) throws IOException{
+        Boolean isFile = fs.isFile( new Path( currentPath ) );
+        String directory = currentPath;
+        if( isFile ) {
+            directory = directory.substring( 0, directory.lastIndexOf( "/" ) );
+        }
+        return directory.endsWith( "/" ) ? directory : directory + "/";
+    }
 //
 //
 //

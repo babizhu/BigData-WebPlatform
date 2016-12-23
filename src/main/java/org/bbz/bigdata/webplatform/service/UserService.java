@@ -32,6 +32,7 @@ public class UserService extends IdNameEntityService<User>{
 
     public User add( User user ){
 
+
         user.setSalt( R.UU16() );
         user.setPassword( new Sha256Hash( user.getPassword(), user.getSalt() ).toHex() );
         user.setCreateTime( new Date() );

@@ -19,7 +19,6 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -33,9 +32,9 @@ import javax.servlet.http.HttpSession;
 
 public class UserModule extends BaseModule{
     @Inject
-    protected UserService userService;
+    private UserService userService;
     @Inject
-    protected Dao dao;
+    private Dao dao;
 
 
 
@@ -45,10 +44,10 @@ public class UserModule extends BaseModule{
     public Object login( @Param("username") String username,
                          @Param("password") String password,
                          @Param("rememberMe") boolean rememberMe,
-                         @Param("captcha") String captcha,
+//                         @Param("captcha") String captcha,
 //                        @Attr(scope = Scope.SESSION, value = "nutz_captcha") String _captcha,
                          HttpSession session,
-                         HttpServletRequest req,
+//                         HttpServletRequest req,
                          HttpServletResponse response ){
         NutMap re = new NutMap();
 //        if (!Toolkit.checkCaptcha(_captcha, captcha)) {
@@ -58,9 +57,7 @@ public class UserModule extends BaseModule{
         if( Strings.isBlank( username ) || Strings.isBlank( password ) ) {
             return buildErrorResponse( response, ErrorCode.USER_LOGIN_ERROR );
         }
-        String p = decodeRsaPassword( password );
-
-        int userId = userService.fetch( username, p );
+        int userId = userService.fetch( username,decodeRsaPassword( password ) );
         if( userId < 0 ) {
 
             return buildErrorResponse( response, ErrorCode.USER_LOGIN_ERROR );
@@ -148,7 +145,6 @@ public class UserModule extends BaseModule{
         user = userService.add( user );
         return user;
     }
-
 
     @At
     public Object update( @Param("password") String password, @Attr("me") int me ){

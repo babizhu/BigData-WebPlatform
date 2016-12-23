@@ -18,7 +18,6 @@ import java.io.IOException;
 public class HdfsService{
 
 
-
     /**
      * 获取目录列表
      *
@@ -69,19 +68,33 @@ public class HdfsService{
     }
 
 
-    public ErrorCode mkdir( String path ){
+    public ErrorCode mkdir( FileSystem fs, String path ) throws IOException{
 
+        Path dst = new Path( path );
 
-        return null;
+        if( fs.exists( dst ) ) {
+//            return buildErrorResponse( response, 202, dst.toString() );
+            return ErrorCode.HDFS_DIR_HAS_EXIST;
+        }
+        fs.mkdirs( dst );
+        return ErrorCode.SUCCESS;
     }
 
-    public ErrorCode rm( String path ){
-        return null;
+    public ErrorCode rm( FileSystem fs,String path,boolean recursiveDelete ){
+        try {
+            fs.delete( new Path( path ), recursiveDelete );//false 为是否递归删除
+        }catch( Exception e ){
+            return ErrorCode.HDFS_NOT_RECURSIVE;
+        }
+        return ErrorCode.SUCCESS;
     }
 
-    public ErrorCode rename( String path ){
-        return null;
+    public ErrorCode rename( FileSystem fs, String srcPath, String destPath ) throws IOException{
+        fs.rename( new Path( srcPath ), new Path( destPath ) );
+        return ErrorCode.SUCCESS;
+
     }
+
 
 
 }

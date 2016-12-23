@@ -48,4 +48,29 @@ public class BaseModule{
     protected NutMap buildSuccessResponse(){
         return new NutMap().addv( "success",true );
     }
+
+
+    public static void main( String[] args ){
+        int lostNumber = 94549;
+        int maxNumber = 100000000;
+
+        int[] array = new int[maxNumber-1];
+        int index = 0;
+        for( int i = 1; i <= maxNumber; i++ ) {
+            if( lostNumber != i ) {
+                array[index++] = i ;
+            }
+        }
+
+//        System.out.println( Arrays.toString(array));
+
+        int result = 0;
+        for( int i : array ) {
+            result ^= i;
+        }
+        result ^=1;
+        result ^=maxNumber;
+
+        System.out.println(result%2==0?result+1:result-1);
+    }
 }
